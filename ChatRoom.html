@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- <link rel="shortcut icon" href="#"> -->
+  <meta charset="UTF8">
+  <style>
+    div.input {
+      position: -webkit-sticky;
+      position: fixed;
+      top: 10;
+      width: 24%;
+      height: auto;
+      padding: 1px;
+      background-color: #cae8ca;
+      border: 1px solid #4CAF50;
+      margin-left: 1%;
+    }
+    video.gesture{
+      top: 10px;
+      position: fixed;
+      background-color: lightgrey;
+      width: 33%;
+      height: auto;
+      border: 5px solid green;
+      padding: 5px;
+      margin-left: 65%;
+      background-color: #cae8ca;
+      
+    }
+    div.ChatView{
+      position: absolute;
+      height: 100%;
+      width: 30%;
+      margin-left: 30%;
+      border: 3px solid rgb(33, 152, 173);
+      background-color: rgb(33, 152, 173);
+    }
+    input{
+      position: relative;
+      width: 80%;
+    }
+  </style>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    let socket = io();
+
+    socket.on('connect', function () {
+      console.log('서버와 연결');
+    });
+
+    socket.on('ChatViewChange', function (ChatLogs) {
+      let chatView = document.getElementById("ChatView");
+      let len = chatView.childElementCount
+      while(chatView.childElementCount !=0){ 
+        chatView.removeChild(chatView.firstChild);
+      }
+
+      for (let i in ChatLogs) {
+        console.log(i);
+        let para = document.createElement('p');
+        if (ChatLogs[i]) {
+          console.log(ChatLogs[i].log);
+          if(ChatLogs[i].id == 0){//user
+            para.style.textAlign = "left";
+          }
+          else{//Ai
+            para.style.textAlign = "right";
+            para.style.marginLeft = "50%";
+          }
+          para.style.width = "50%";
+          para.style.backgroundColor = "white";
+          
+          para.innerHTML = ChatLogs[i].log;
+          chatView.appendChild(para);
+        }
+        else {
+          console.log("chatview reflash");
+        }
+      }
+      //document.body.appendChild(chatView);
+    });
+
+    function sendMsg() {
+      let msg = document.getElementById("msg");
+      let log = { "id": 0, "log": msg.value };
+      socket.emit('userMsg', log);
+    }
+  </script>
+</head>
+
+<body>
+  <div class = "input">
+    <form action="localhost:3000">
+      <label for="msg">msg</label><br>
+      <input type="text" id="msg" name="msg" value="메세지를 입력해주세요."><br>
+    </form>
+    <button onclick="sendMsg()">보내기</button>
+  </div>
+
+  <div class = "ChatView" id="ChatView">
+  </div>
+
+  <video class="gesture" id="video0"  hidden>
+    <source src="/gesture_space/0.idle.webm" type="video/webm">
+    Your browser does not support the video tag.
+  </video>
+
+  <video class="gesture" id="video1"  >
+    <source src="/gesture_space/1.hi.webm" type="video/webm">
+    Your browser does not support the video tag.
+  </video>
+  <video class="gesture" hidden>
+    <source src="/gesture_space/2.agree.webm" type="video/webm">
+    Your browser does not support the video tag.
+  </video>
+  <video class="gesture" hidden>
+    <source src="/gesture_space/3.disagree.webm" type="video/webm">
+    Your browser does not support the video tag.
+  </video>
+
+  <video class="gesture" id="video4" hidden>
+    <source src="/gesture_space/4.pleased.webm" type="video/webm">
+
+    Your browser does not support the video tag.
+  </video>
+
+  <video class="gesture" id="video5" hidden>
+    <source src="/gesture_space/5.sad.webm" type="video/webm">
+
+    Your browser does not support the video tag.
+  </video>
+
+  <video class="gesture" id="video6" hidden>
+    <source src="/gesture_space/6.terrified.webm" type="video/webm">
+
+    Your browser does not support the video tag.
+  </video>
+
+  <video class="gesture" id="video7" hidden>
+    <source src="/gesture_space/7.thumbs_up.webm" type="video/webm">
+
+    Your browser does not support the video tag.
+  </video>
+
+  <video class="gesture" id="video8" hidden>
+    <source src="/gesture_space/8.shy.webm" type="video/webm">
+
+    Your browser does not support the video tag.
+  </video>
+
+  <video class="gesture" id="video9" hidden>
+    <source src="/gesture_space/9.webm" type="video/webm">
+
+    Your browser does not support the video tag.
+  </video>
+
+  <video class="gesture" id="video10" hidden>
+    <source src="/gesture_space/10.angry.webm" type="video/webm">
+
+    Your browser does not support the video tag.
+  </video>
+
+  <video class="gesture" id="video11" hidden>
+    <source src="/gesture_space/11.cheering.webm" type="video/webm">
+    Your browser does not support the video tag.
+  </video>
+
+  <video class="gesture" id="video12" hidden>
+    <source src="/gesture_space/12.whatever_gesture.webm" type="video/webm">
+    Your browser does not support the video tag.
+  </video>
+
+
+  <script>
+    socket.on('gestureChange', function (number) {
+      console.log("gesture:" + number);
+      console.log(`video${number}`);
+     
+      _gesture = document.getElementById(`video${number}`);
+      console.log(_gesture.currentSrc);
+      let gestures = document.getElementsByClassName("gesture");
+      for (let i in gestures) {
+        gestures[i].hidden = true;
+      }
+      _gesture.hidden = false;
+     
+      _gesture.onended = function () {
+        console.log("video end");
+        _gesture.play();
+      };
+      //_gesture.play();
+      _gesture.autoplay=true;
+      _gesture.load();
+    });
+
+  </script>
+ 
+</body>
+
+</html>
