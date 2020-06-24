@@ -6,6 +6,7 @@
 0번:https://github.com/noncontact/Gesture_sejong에서 파일 다운
 
 아나콘다 파이썬 setting
+
 1번:Anaconda 설치
 2번:Anaconda Prompt를 실행
 3번:pip install tensorflow 1.15 실행
