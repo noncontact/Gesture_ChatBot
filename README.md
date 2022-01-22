@@ -1,4 +1,4 @@
-# Gesture_sejong
+# Gesture_ChatBot
 
 ## 사용법
 
